@@ -5,6 +5,8 @@ import hudson.model.Cause.UserIdCause;
 
 import java.util.Map;
 
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import org.jenkinsci.plugins.builduser.utils.UsernameUtils;
 import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
 
@@ -31,8 +33,8 @@ public class UserCauseDeterminant implements IUsernameSettable<UserCause> {
 	 * <p>
 	 * <b>{@link UserCause}</b> based implementation.
 	 */
-	public boolean setJenkinsUserBuildVars(UserCause cause,
-			Map<String, String> variables) {
+	public boolean setJenkinsUserBuildVars(Run run, UserCause cause,
+										   Map<String, String> variables, TaskListener listener) {
 		if(null != cause) {
 			String username = cause.getUserName();
 			UsernameUtils.setUsernameVars(username, variables);

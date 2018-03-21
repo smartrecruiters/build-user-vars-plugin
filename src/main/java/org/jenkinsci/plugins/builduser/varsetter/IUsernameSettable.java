@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.builduser.varsetter;
 
 import hudson.model.Cause;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 
 import java.util.Map;
 
@@ -37,15 +39,18 @@ public interface IUsernameSettable<T extends Cause> {
 	/**
 	 * Adds username build variables extracted from build cause to map of build variables.
 	 * 
+	 *
+	 * @param run
 	 * @param cause
 	 * 		cause where to get username from.
 	 * @param variables
 	 * 		map of build variables, where to add username variables.
+	 * @param listener
 	 * @return
 	 * 		<code>true</code> if username was determined and added to the passed map,
 	 *      <code>false</code> otherwise.
 	 */
-	boolean setJenkinsUserBuildVars(T cause, Map<String, String> variables);
+	boolean setJenkinsUserBuildVars(Run run, T cause, Map<String, String> variables, TaskListener listener) throws Exception;
 	
 	/**
 	 * Returns {@link Cause} subclass used to determine user name.
