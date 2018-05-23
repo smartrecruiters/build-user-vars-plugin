@@ -35,7 +35,8 @@ public interface IUsernameSettable<T extends Cause> {
 	public static final String BUILD_USER_ID = "BUILD_USER_ID";
 	/** Optional value for variable which value couldn't be defined. */
 	public static final String UNDEFINED = "UNDEFINED";
-	
+	public static final String BUILD_USER_SLACK = "BUILD_USER_SLACK";
+
 	/**
 	 * Adds username build variables extracted from build cause to map of build variables.
 	 * 
