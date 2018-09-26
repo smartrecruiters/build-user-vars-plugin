@@ -17,6 +17,9 @@ public class GitHubPullRequestLabelCauseDeterminant implements IUsernameSettable
         if (cause != null) {
             boolean matched = UserUtils.setVarsForUser(envVars, cause.getSender());
             if (!matched) {
+                matched = UserUtils.setVarsForUser(envVars, cause.getCdTriggerUser());
+            }
+            if (!matched) {
                 matched = UserUtils.setVarsForUser(envVars, cause.getPrOwner());
             }
             if (!matched) {
