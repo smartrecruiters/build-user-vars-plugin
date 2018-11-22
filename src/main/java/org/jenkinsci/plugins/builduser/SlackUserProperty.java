@@ -10,9 +10,12 @@ import hudson.model.User;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
+
+import static java.lang.String.format;
 
 public class SlackUserProperty extends UserProperty {
 
@@ -33,6 +36,14 @@ public class SlackUserProperty extends UserProperty {
 
     public void setSlackUsername(String slackUsername) {
         this.slackUsername = slackUsername;
+    }
+
+    public String getSlackWrappedUsername() {
+        String nonNullSlackUsername = StringUtils.trimToEmpty(slackUsername);
+        if (nonNullSlackUsername.isEmpty()) {
+            return nonNullSlackUsername;
+        }
+        return format("@<%s>", nonNullSlackUsername);
     }
 
     @Extension
