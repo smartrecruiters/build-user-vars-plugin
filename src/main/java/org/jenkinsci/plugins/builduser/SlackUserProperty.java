@@ -43,7 +43,7 @@ public class SlackUserProperty extends UserProperty {
         if (nonNullSlackUsername.isEmpty()) {
             return nonNullSlackUsername;
         }
-        return format("@<%s>", nonNullSlackUsername);
+        return format("<@%s>", nonNullSlackUsername);
     }
 
     @Extension
