@@ -25,8 +25,7 @@ public final class UserUtils {
                 }
                 SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
                 if (null != slackProperty) {
-                    String slackUsername = StringUtils.trimToEmpty(slackProperty.getSlackUsername());
-                    variables.put(IUsernameSettable.BUILD_USER_SLACK, slackUsername);
+                    variables.put(IUsernameSettable.BUILD_USER_SLACK, slackProperty.getSlackWrappedUsername());
                 }
                 UsernameUtils.setUsernameVars(user.getDisplayName(), variables);
             }
