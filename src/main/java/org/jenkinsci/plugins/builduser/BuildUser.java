@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.builduser;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jenkins.github_pr_label_build.GitHubPullRequestLabelCause;
@@ -48,15 +49,14 @@ public class BuildUser extends EnvironmentContributor {
 
     private static final Logger log = Logger.getLogger(BuildUser.class.getName());
 
-    private static final String EXTENSION_DISPLAY_NAME = "Set jenkins user build variables";
-
     @Override
     public void buildEnvironmentFor(Run r, EnvVars env, TaskListener listener) {
         if (env.get(BUILD_USER_ID) == null) {
             try {
                 makeUserBuildVariables(r, env, listener);
             } catch (Exception e) {
-                listener.error("Failed to detect BUILD USER");
+                String message = String.format("Failed to detect BUILD USER for build %s", r.toString());
+                log.log(Level.SEVERE, message);
             }
         }
     }
@@ -101,8 +101,8 @@ public class BuildUser extends EnvironmentContributor {
         try {
             handleOtherCausesOrLogWarningIfUnhandled(build, envVars, listener);
         } catch (Exception e) {
-            listener.error("Failed to detect BUILD USER");
-        }
+            String message = String.format("Failed to detect BUILD USER for build %s", build);
+            log.log(Level.SEVERE, message);        }
     }
 
     private static void handleOtherCausesOrLogWarningIfUnhandled(@NonNull Run<?, ?> build, @NonNull EnvVars envVars, TaskListener listener) throws Exception {
