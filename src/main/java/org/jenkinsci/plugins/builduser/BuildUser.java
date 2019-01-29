@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.builduser;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.jenkins.github_pr_label_build.GitHubPullRequestLabelCause;
 import hudson.EnvVars;
@@ -36,6 +38,8 @@ import static org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable.BUILD_
 @SuppressWarnings("deprecation")
 @Extension(ordinal = 1000)
 public class BuildUser extends EnvironmentContributor {
+
+    private static final Logger LOGGER = Logger.getLogger(BuildUser.class.getName());
 
     @Override
     public void buildEnvironmentFor(Run r, EnvVars env, TaskListener listener) throws IOException, InterruptedException {
@@ -95,7 +99,8 @@ public class BuildUser extends EnvironmentContributor {
                 return;
             }
         } catch (Exception e) {
-            listener.error("Failed to detect BUILD USER");
+            String message = String.format("Failed to detect BUILD USER for build %s", build.toString());
+            LOGGER.log(Level.SEVERE, message);
         }
     }
 }
