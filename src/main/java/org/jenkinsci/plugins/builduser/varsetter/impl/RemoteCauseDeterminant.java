@@ -4,6 +4,8 @@ import static java.lang.String.format;
 
 import java.util.Map;
 
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import org.jenkinsci.plugins.builduser.utils.UsernameUtils;
 import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
 
@@ -12,7 +14,7 @@ import hudson.model.Cause;
 public class RemoteCauseDeterminant implements IUsernameSettable<Cause.RemoteCause> {
 
     @Override
-    public boolean setJenkinsUserBuildVars(Cause.RemoteCause cause, Map<String, String> variables) {
+    public boolean setJenkinsUserBuildVars(Run run, Cause.RemoteCause cause, Map<String, String> variables, TaskListener listener ) {
         if (cause == null) {
             return false;
         }

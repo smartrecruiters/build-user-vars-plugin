@@ -1,7 +1,6 @@
 package org.jenkinsci.plugins.builduser;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.EnvironmentContributor;
@@ -15,7 +14,7 @@ public class BuildUserVarsEnvironmentContributor extends EnvironmentContributor 
     public void buildEnvironmentFor(
             @NonNull Run r, @NonNull EnvVars envs, @NonNull TaskListener listener) {
         if (BuildUserVarsConfig.get().isAllBuilds()) {
-            BuildUser.makeUserBuildVariables(r, envs);
+            BuildUser.makeUserBuildVariables(r, envs, listener);
         }
     }
 }

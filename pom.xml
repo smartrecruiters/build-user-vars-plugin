@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>build-user-vars-plugin</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>${revision}-custom-plugin-${changelist}</version>
     <packaging>hpi</packaging>
     <name>Jenkins build user vars plugin</name>
     <description>Sets username build variables</description>
@@ -65,12 +65,27 @@
             <artifactId>branch-api</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>github-pr-label-build</artifactId>
+            <version>2.0-custom-plugin-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>jackson2-api</artifactId>
+            <version>2.14.1-313.v504cdd45c18b</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>credentials</artifactId>
+            <version>1214.v1de940103927</version>
+        </dependency>
     </dependencies>
 
     <properties>
         <revision>1.10</revision>
         <changelist>-SNAPSHOT</changelist>
-        <jenkins.version>2.361.4</jenkins.version>
+        <jenkins.version>2.375</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
     </properties>
 

@@ -1,5 +1,12 @@
 package org.jenkinsci.plugins.builduser;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import com.jenkins.github_pr_label_build.GitHubPullRequestLabelCause;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -15,20 +22,14 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.triggers.SCMTrigger.SCMTriggerCause;
 import hudson.triggers.TimerTrigger.TimerTriggerCause;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.logging.Logger;
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 import jenkins.branch.BranchEventCause;
 import jenkins.branch.BranchIndexingCause;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildWrapper;
-
 import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
+import org.jenkinsci.plugins.builduser.varsetter.impl.BranchEventCauseDeterminant;
 import org.jenkinsci.plugins.builduser.varsetter.impl.BranchIndexingTriggerDeterminant;
+import org.jenkinsci.plugins.builduser.varsetter.impl.GitHubPullRequestLabelCauseDeterminant;
 import org.jenkinsci.plugins.builduser.varsetter.impl.RemoteCauseDeterminant;
 import org.jenkinsci.plugins.builduser.varsetter.impl.SCMTriggerCauseDeterminant;
 import org.jenkinsci.plugins.builduser.varsetter.impl.TimerTriggerCauseDeterminant;
@@ -59,7 +60,7 @@ public class BuildUser extends SimpleBuildWrapper {
     public void setUp(Context context, Run<?, ?> build, FilePath workspace,
                       Launcher launcher, TaskListener listener, EnvVars initialEnvironment) {
         Map<String, String> variables = new HashMap<>();
-        makeUserBuildVariables(build, variables);
+        makeUserBuildVariables(build, variables, listener);
         for (Map.Entry<String, String> entry : variables.entrySet()) {
             context.env(entry.getKey(), entry.getValue());
         }
@@ -71,18 +72,18 @@ public class BuildUser extends SimpleBuildWrapper {
      * TODO: The whole hierarchy and way of applying could be refactored.
      */
     @Restricted(NoExternalUse.class)
-    static void makeUserBuildVariables(@NonNull Run<?, ?> build, @NonNull Map<String, String> variables) {
+    static void makeUserBuildVariables(@NonNull Run<?, ?> build, @NonNull Map<String, String> variables, TaskListener listener) {
 
         /* Try to use UserIdCause to get & set jenkins user build variables */
         UserIdCause userIdCause = build.getCause(UserIdCause.class);
-        if (new UserIdCauseDeterminant().setJenkinsUserBuildVars(userIdCause, variables)) {
+        if (new UserIdCauseDeterminant().setJenkinsUserBuildVars(build, userIdCause, variables, listener)) {
             return;
         }
 
         // Try to use deprecated UserCause to get & set jenkins user build variables
         @SuppressWarnings("deprecation")
         UserCause userCause = build.getCause(UserCause.class);
-        if (new UserCauseDeterminant().setJenkinsUserBuildVars(userCause, variables)) {
+        if (new UserCauseDeterminant().setJenkinsUserBuildVars(build, userCause, variables, listener)) {
             return;
         }
 
@@ -93,7 +94,7 @@ public class BuildUser extends SimpleBuildWrapper {
             if (job != null) {
                 Run<?, ?> upstream = job.getBuildByNumber(upstreamCause.getUpstreamBuild());
                 if (upstream != null) {
-                    makeUserBuildVariables(upstream, variables);
+                    makeUserBuildVariables(upstream, variables, listener);
                     return;
                 }
             }
@@ -101,39 +102,42 @@ public class BuildUser extends SimpleBuildWrapper {
 
         // Other causes should be checked after as build can be triggered automatically and later rerun manually by a human.
         // In that case there will be multiple causes and the direct manually one is preferred to set in a variable.
-        handleOtherCausesOrLogWarningIfUnhandled(build, variables);
+        try {
+            handleOtherCausesOrLogWarningIfUnhandled(build, variables, listener);
+        } catch (Exception e) {
+            listener.error("Failed to detect BUILD USER");
+        }
     }
 
-    private static void handleOtherCausesOrLogWarningIfUnhandled(@NonNull Run<?, ?> build, @NonNull Map<String, String> variables) {
+    private static void handleOtherCausesOrLogWarningIfUnhandled(@NonNull Run<?, ?> build, @NonNull Map<String, String> variables, TaskListener listener) throws Exception {
         // set BUILD_USER_NAME and ID to fixed value if the build was triggered by a change in the scm, timer or remotely with token
         SCMTriggerCause scmTriggerCause = build.getCause(SCMTriggerCause.class);
-        if (new SCMTriggerCauseDeterminant().setJenkinsUserBuildVars(scmTriggerCause, variables)) {
+        if (new SCMTriggerCauseDeterminant().setJenkinsUserBuildVars(build, scmTriggerCause, variables, listener)) {
             return;
         }
 
         TimerTriggerCause timerTriggerCause = build.getCause(TimerTriggerCause.class);
-        if (new TimerTriggerCauseDeterminant().setJenkinsUserBuildVars(timerTriggerCause, variables)) {
+        if (new TimerTriggerCauseDeterminant().setJenkinsUserBuildVars(build, timerTriggerCause, variables, listener)) {
             return;
         }
 
         RemoteCause remoteTriggerCause = build.getCause(RemoteCause.class);
-        if (new RemoteCauseDeterminant().setJenkinsUserBuildVars(remoteTriggerCause, variables)) {
+        if (new RemoteCauseDeterminant().setJenkinsUserBuildVars(build, remoteTriggerCause, variables, listener)) {
             return;
         }
 
-        try {
-            BranchIndexingCause branchIndexingCause = build.getCause(BranchIndexingCause.class);
-            if (new BranchIndexingTriggerDeterminant().setJenkinsUserBuildVars(branchIndexingCause, variables)) {
-                return;
-            }
+        GitHubPullRequestLabelCause prLabelCause = build.getCause(GitHubPullRequestLabelCause.class);
+        if (new GitHubPullRequestLabelCauseDeterminant().setJenkinsUserBuildVars(build, prLabelCause, variables, listener)) {
+            return;
+        }
+        BranchIndexingCause branchIndexingCause = build.getCause(BranchIndexingCause.class);
+        if (new BranchIndexingTriggerDeterminant().setJenkinsUserBuildVars(build, branchIndexingCause, variables, listener)) {
+            return;
+        }
 
-            BranchEventCause branchEventCause = build.getCause(BranchEventCause.class);
-            if (branchEventCause != null) {
-                // branch event cause does not have to be logged.
-                return;
-            }
-        } catch (NoClassDefFoundError e) {
-            log.fine("It seems the branch-api plugin is not installed, skipping.");
+        BranchEventCause branchEventCause = build.getCause(BranchEventCause.class);
+        if (new BranchEventCauseDeterminant().setJenkinsUserBuildVars(build, branchEventCause, variables, listener)) {
+            return;
         }
 
         log.warning(() -> "Unsupported cause type(s): " + Arrays.toString(build.getCauses().toArray()));

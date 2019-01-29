@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.builduser.varsetter.impl;
 
 import java.util.Map;
 
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import org.jenkinsci.plugins.builduser.utils.UsernameUtils;
 import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
 
@@ -13,7 +15,7 @@ public class TimerTriggerCauseDeterminant implements IUsernameSettable<TimerTrig
 	private static final String TIMER_TRIGGER_DUMMY_USER_ID = "timer";
 
     @Override
-	public boolean setJenkinsUserBuildVars(TimerTrigger.TimerTriggerCause cause, Map<String, String> variables) {
+	public boolean setJenkinsUserBuildVars(Run run, TimerTrigger.TimerTriggerCause cause, Map<String, String> variables, TaskListener listener) {
 		if (cause == null) {
 			return false;
 		}

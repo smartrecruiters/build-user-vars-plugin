@@ -1,13 +1,12 @@
 package org.jenkinsci.plugins.builduser.varsetter.impl;
 
-import java.io.IOException;
 import java.util.Map;
 
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import jenkins.branch.BranchIndexingCause;
+import jenkins.branch.BranchEventCause;
 import jenkins.scm.api.SCMSource;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.builduser.utils.UserUtils;
@@ -17,12 +16,12 @@ import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
-public class BranchIndexingTriggerDeterminant implements IUsernameSettable<BranchIndexingCause> {
-    private static final Class<BranchIndexingCause> causeClass = BranchIndexingCause.class;
+public class BranchEventCauseDeterminant implements IUsernameSettable<BranchEventCause> {
 
-    @Override
-    public boolean setJenkinsUserBuildVars(Run run, BranchIndexingCause cause, Map<String, String> variables, TaskListener listener) throws IOException, InterruptedException {
+    final Class<BranchEventCause> causeClass = BranchEventCause.class;
 
+    public boolean setJenkinsUserBuildVars(Run run, BranchEventCause cause,
+                                           Map<String, String> variables, TaskListener listener) throws Exception {
         if (cause != null) {
             String changeAuthor = run.getEnvironment(listener).get("CHANGE_AUTHOR");
             if (StringUtils.isNotEmpty(changeAuthor)) {
@@ -59,8 +58,8 @@ public class BranchIndexingTriggerDeterminant implements IUsernameSettable<Branc
         }
     }
 
-    @Override
-    public Class<BranchIndexingCause> getUsedCauseClass() {
+    public Class<BranchEventCause> getUsedCauseClass() {
         return causeClass;
     }
+
 }
