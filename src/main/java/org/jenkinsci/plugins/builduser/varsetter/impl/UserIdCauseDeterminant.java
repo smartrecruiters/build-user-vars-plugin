@@ -2,16 +2,17 @@ package org.jenkinsci.plugins.builduser.varsetter.impl;
 
 import hudson.EnvVars;
 import hudson.model.Cause.UserIdCause;
-
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.model.User;
+import hudson.model.UserProperty;
+import hudson.tasks.Mailer;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.builduser.SlackUserProperty;
 import org.jenkinsci.plugins.builduser.utils.UsernameUtils;
 import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
-import hudson.tasks.Mailer;
-import hudson.model.User;
-import hudson.model.UserProperty;
+
+import java.util.logging.Logger;
 
 /**
  * This implementation is used to determine build username variables from <b>{@link UserIdCause}</b>.
@@ -27,46 +28,47 @@ import hudson.model.UserProperty;
  */
 public class UserIdCauseDeterminant implements IUsernameSettable<UserIdCause> {
 
-	final Class<UserIdCause> causeClass = UserIdCause.class;
+    final Class<UserIdCause> causeClass = UserIdCause.class;
+    private static final Logger log = Logger.getLogger(UserIdCauseDeterminant.class.getName());
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * <b>{@link UserIdCause}</b> based implementation.
-	 */
-	public boolean setJenkinsUserBuildVars(Run run, UserIdCause cause,
-										   EnvVars envVars, TaskListener listener) {
-		if(null != cause) {
-			String username = cause.getUserName();
-			UsernameUtils.setUsernameVars(username, envVars);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <b>{@link UserIdCause}</b> based implementation.
+     */
+    public boolean setJenkinsUserBuildVars(Run run, UserIdCause cause,
+                                           EnvVars envVars, TaskListener listener) {
+        if (null != cause) {
+            String username = cause.getUserName();
+            UsernameUtils.setUsernameVars(username, envVars);
 
-			String userid = StringUtils.trimToEmpty(cause.getUserId());
-			envVars.put(BUILD_USER_ID, userid);
+            String userid = StringUtils.trimToEmpty(cause.getUserId());
+            envVars.put(BUILD_USER_ID, userid);
 
-            		User user=User.get(userid);
-            		if(null != user) {
-            		    UserProperty prop = user.getProperty(Mailer.UserProperty.class);
-            		    if(null != prop) {
-            		        String adrs = StringUtils.trimToEmpty(((Mailer.UserProperty)prop).getAddress());
-            		        envVars.put(BUILD_USER_EMAIL, adrs);
-            		    }
-                        SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
-                        if (null != slackProperty) {
-                            envVars.put(IUsernameSettable.BUILD_USER_SLACK, slackProperty.getSlackWrappedUsername());
-                        }
-            		}
+            User user = User.get(userid);
+            if (null != user) {
+                UserProperty prop = user.getProperty(Mailer.UserProperty.class);
+                if (null != prop) {
+                    String adrs = StringUtils.trimToEmpty(((Mailer.UserProperty) prop).getAddress());
+                    envVars.put(BUILD_USER_EMAIL, adrs);
+                }
+                SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
+                if (null != slackProperty) {
+                    envVars.put(IUsernameSettable.BUILD_USER_SLACK, slackProperty.getSlackWrappedUsername());
+                }
+            }
 
-			return true;
-		} else {
-			return false;
-		}
-	}
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class<UserIdCause> getUsedCauseClass() {
-		return causeClass;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class<UserIdCause> getUsedCauseClass() {
+        return causeClass;
+    }
 
 }
