@@ -39,6 +39,11 @@ public final class UserUtils {
             String githubUsername = StringUtils.trimToEmpty(property.getGithubUsername());
             return githubUsername.equals(pushedBy);
         }
-        return StringUtils.isNotEmpty(user.getDescription()) && user.getDescription().contains(pushedBy);
+
+        String description = user.getDescription();
+        if (description != null) {
+            return description.contains(pushedBy);
+        }
+        return false;
     }
 }

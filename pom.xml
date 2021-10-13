@@ -56,6 +56,41 @@
             <version>2.6</version>
         </dependency>
         <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>github-branch-source</artifactId>
+            <version>2.11.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.module</groupId>
+                    <artifactId>jackson-module-jaxb-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.module</groupId>
+                    <artifactId>jackson-module-parameter-names</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jdk8</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <scope>test</scope>
@@ -102,7 +137,7 @@
     <properties>
         <revision>1.9</revision>
         <changelist>-SNAPSHOT</changelist>
-        <jenkins.version>2.277.1</jenkins.version>
+        <jenkins.version>2.303.1</jenkins.version>
         <java.level>8</java.level>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
         <findbugs.failOnError>false</findbugs.failOnError>
