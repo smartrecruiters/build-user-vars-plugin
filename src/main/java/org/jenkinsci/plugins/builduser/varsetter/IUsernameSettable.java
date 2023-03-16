@@ -37,6 +37,9 @@ public interface IUsernameSettable<T extends Cause> {
 	String BUILD_USER_ID = "BUILD_USER_ID";
 	/** Optional value for variable which value couldn't be defined. */
 	String UNDEFINED = "UNDEFINED";
+	/** Slack name of the user who started build */
+	String BUILD_USER_SLACK = "BUILD_USER_SLACK";
+
 
 	/**
 	 * Adds username build variables extracted from build cause to map of build variables.

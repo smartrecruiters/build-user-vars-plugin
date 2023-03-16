@@ -13,6 +13,7 @@ import hudson.security.SecurityRealm;
 import hudson.tasks.Mailer;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.plugins.builduser.SlackUserProperty;
 import org.jenkinsci.plugins.builduser.utils.UsernameUtils;
 import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
 import org.jenkinsci.plugins.saml.SamlSecurityRealm;
@@ -77,6 +78,12 @@ public class UserIdCauseDeterminant implements IUsernameSettable<UserIdCause> {
                 if (null != prop) {
                     String adrs = StringUtils.trimToEmpty(prop.getAddress());
                     variables.put(BUILD_USER_EMAIL, adrs);
+                }
+
+                SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
+                if (null != slackProperty) {
+                    String slackUsername = StringUtils.trimToEmpty(slackProperty.getSlackUsername());
+                    variables.put(IUsernameSettable.BUILD_USER_SLACK, slackUsername);
                 }
             }
 
