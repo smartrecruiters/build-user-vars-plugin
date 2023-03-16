@@ -1,8 +1,8 @@
 package org.jenkinsci.plugins.builduser.varsetter.impl;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
+import hudson.EnvVars;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.triggers.SCMTrigger;
@@ -16,18 +16,18 @@ public class SCMTriggerCauseDeterminant implements IUsernameSettable<SCMTrigger.
 
     final Class<SCMTrigger.SCMTriggerCause> causeClass = SCMTrigger.SCMTriggerCause.class;
 
-    public boolean setJenkinsUserBuildVars(Run run, SCMTriggerCause cause, Map<String, String> variables, TaskListener listener)  throws Exception  {
+    public boolean setJenkinsUserBuildVars(Run run, SCMTriggerCause cause, EnvVars envVars, TaskListener listener) throws Exception {
 
         if (cause != null) {
-            UsernameUtils.setUsernameVars("SCM Change", variables);
+            UsernameUtils.setUsernameVars("SCM Change", envVars);
             // sets pushedBy provided by GitHubPushCause as BUILD_USER_ID
             Field pushedByField = cause.getClass().getDeclaredField("pushedBy");
             pushedByField.setAccessible(true);
             String pushedBy = (String) pushedByField.get(cause);
             if (StringUtils.isNotEmpty(pushedBy)) {
-                boolean matched = UserUtils.setVarsForUser(variables, pushedBy);
+                boolean matched = UserUtils.setVarsForUser(envVars, pushedBy);
                 if (!matched) {
-                    variables.put(BUILD_USER_ID, pushedBy);
+                    envVars.put(BUILD_USER_ID, pushedBy);
                 }
             }
             return true;

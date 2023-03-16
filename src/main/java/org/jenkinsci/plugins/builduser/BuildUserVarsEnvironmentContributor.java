@@ -14,7 +14,11 @@ public class BuildUserVarsEnvironmentContributor extends EnvironmentContributor 
     public void buildEnvironmentFor(
             @NonNull Run r, @NonNull EnvVars envs, @NonNull TaskListener listener) {
         if (BuildUserVarsConfig.get().isAllBuilds()) {
-            BuildUser.makeUserBuildVariables(r, envs, listener);
+            try {
+                BuildUser.makeUserBuildVariables(r, envs, listener);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

@@ -1,9 +1,9 @@
 package org.jenkinsci.plugins.builduser.varsetter.impl;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.logging.Logger;
 
+import hudson.EnvVars;
 import hudson.model.Cause.UserIdCause;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -43,10 +43,10 @@ public class UserIdCauseDeterminant implements IUsernameSettable<UserIdCause> {
      * <p>
      * <b>{@link UserIdCause}</b> based implementation.
      */
-    public boolean setJenkinsUserBuildVars(Run run, UserIdCause cause, Map<String, String> variables, TaskListener listener) {
+    public boolean setJenkinsUserBuildVars(Run run, UserIdCause cause, EnvVars envVars, TaskListener listener) {
         if (null != cause) {
             String username = cause.getUserName();
-            UsernameUtils.setUsernameVars(username, variables);
+            UsernameUtils.setUsernameVars(username, envVars);
 
             String trimmedUserId = StringUtils.trimToEmpty(cause.getUserId());
             String originalUserid = trimmedUserId.isEmpty() ? ACL.ANONYMOUS_USERNAME : trimmedUserId;
@@ -68,8 +68,8 @@ public class UserIdCauseDeterminant implements IUsernameSettable<UserIdCause> {
                 // Error
                 log.warning(String.format("Failed to get groups for user: %s error: %s ", userid, err));
             }
-            variables.put(BUILD_USER_ID, userid);
-            variables.put(BUILD_USER_VAR_GROUPS, groupString.toString());
+            envVars.put(BUILD_USER_ID, userid);
+            envVars.put(BUILD_USER_VAR_GROUPS, groupString.toString());
 
 
             User user = User.getById(originalUserid, false);
@@ -77,13 +77,13 @@ public class UserIdCauseDeterminant implements IUsernameSettable<UserIdCause> {
                 Mailer.UserProperty prop = user.getProperty(Mailer.UserProperty.class);
                 if (null != prop) {
                     String adrs = StringUtils.trimToEmpty(prop.getAddress());
-                    variables.put(BUILD_USER_EMAIL, adrs);
+                    envVars.put(BUILD_USER_EMAIL, adrs);
                 }
 
                 SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
                 if (null != slackProperty) {
                     String slackUsername = StringUtils.trimToEmpty(slackProperty.getSlackUsername());
-                    variables.put(IUsernameSettable.BUILD_USER_SLACK, slackUsername);
+                    envVars.put(IUsernameSettable.BUILD_USER_SLACK, slackUsername);
                 }
             }
 
