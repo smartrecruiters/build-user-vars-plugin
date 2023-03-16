@@ -82,8 +82,7 @@ public class UserIdCauseDeterminant implements IUsernameSettable<UserIdCause> {
 
                 SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
                 if (null != slackProperty) {
-                    String slackUsername = StringUtils.trimToEmpty(slackProperty.getSlackUsername());
-                    envVars.put(IUsernameSettable.BUILD_USER_SLACK, slackUsername);
+                    envVars.put(IUsernameSettable.BUILD_USER_SLACK, slackProperty.getSlackWrappedUsername());
                 }
             }
 
