@@ -3,46 +3,51 @@ package org.jenkinsci.plugins.builduser.utils;
 import java.util.Map;
 
 import hudson.model.User;
-import hudson.model.UserProperty;
 import hudson.tasks.Mailer;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.builduser.GithubUserProperty;
 import org.jenkinsci.plugins.builduser.SlackUserProperty;
-import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
+
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
+import static org.apache.commons.lang.StringUtils.trimToEmpty;
+import static org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable.BUILD_USER_EMAIL;
+import static org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable.BUILD_USER_ID;
+import static org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable.BUILD_USER_SLACK;
 
 public final class UserUtils {
 
     public static boolean setVarsForUser(Map<String, String> variables, String githubId) {
-        boolean userFound = false;
-        for (User user : User.getAll()) {
-            if (user.getId().equals(githubId) || isPushByMatchingUser(githubId, user)) {
-                userFound = true;
-                variables.put(IUsernameSettable.BUILD_USER_ID, user.getId());
-                UserProperty prop = user.getProperty(Mailer.UserProperty.class);
-                if (null != prop) {
-                    String adrs = StringUtils.trimToEmpty(((Mailer.UserProperty) prop).getAddress());
-                    variables.put(IUsernameSettable.BUILD_USER_EMAIL, adrs);
-                }
+        return User.getAll().stream()
+                .filter(user -> user.getId().equals(githubId) || isPushByMatchingUser(githubId, user))
+                .findFirst()
+                .map(user -> addCustomVariables(variables, user))
+                .isPresent();
+    }
 
-                SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
-                if (null != slackProperty) {
-                    variables.put(IUsernameSettable.BUILD_USER_SLACK, slackProperty.getSlackWrappedUsername());
-                }
-
-                UsernameUtils.setUsernameVars(user.getDisplayName(), variables);
-            }
+    private static Map<String, String> addCustomVariables(final Map<String, String> variables, final User user) {
+        variables.put(BUILD_USER_ID, user.getId());
+        Mailer.UserProperty prop = user.getProperty(Mailer.UserProperty.class);
+        if (null != prop) {
+            variables.put(BUILD_USER_EMAIL, trimToEmpty(prop.getAddress()));
         }
-        return userFound;
+
+        SlackUserProperty slackProperty = user.getProperty(SlackUserProperty.class);
+        if (null != slackProperty) {
+            variables.put(BUILD_USER_SLACK, slackProperty.getSlackWrappedUsername());
+        }
+
+        UsernameUtils.setUsernameVars(user.getDisplayName(), variables);
+
+        return variables;
     }
 
     private static boolean isPushByMatchingUser(String pushedBy, User user) {
         GithubUserProperty property = user.getProperty(GithubUserProperty.class);
         if (null != property) {
-            String githubUsername = StringUtils.trimToEmpty(property.getGithubUsername());
+            String githubUsername = trimToEmpty(property.getGithubUsername());
             return githubUsername.equals(pushedBy);
         }
 
         String description = user.getDescription();
-        return StringUtils.isNotEmpty(description) && description.contains(pushedBy);
+        return isNotEmpty(description) && description.contains(pushedBy);
     }
 }
