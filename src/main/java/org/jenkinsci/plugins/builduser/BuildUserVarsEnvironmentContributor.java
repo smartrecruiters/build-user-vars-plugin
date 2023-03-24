@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.builduser;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.EnvironmentContributor;
