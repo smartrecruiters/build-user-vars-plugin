@@ -12,7 +12,7 @@ import org.jenkinsci.plugins.builduser.varsetter.IUsernameSettable;
 
 public final class UserUtils {
 
-	public static boolean setVarsForUser(Map<String, String> variables, String githubId) {
+    public static boolean setVarsForUser(Map<String, String> variables, String githubId) {
         boolean userFound = false;
         for (User user : User.getAll()) {
             if (user.getId().equals(githubId) || isPushByMatchingUser(githubId, user)) {
@@ -34,6 +34,7 @@ public final class UserUtils {
         }
         return userFound;
     }
+
     private static boolean isPushByMatchingUser(String pushedBy, User user) {
         GithubUserProperty property = user.getProperty(GithubUserProperty.class);
         if (null != property) {
