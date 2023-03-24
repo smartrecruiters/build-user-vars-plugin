@@ -21,7 +21,7 @@ public class BranchIndexingTriggerDeterminant implements IUsernameSettable<Branc
     private static final Class<BranchIndexingCause> causeClass = BranchIndexingCause.class;
 
     @Override
-    public boolean setJenkinsUserBuildVars(Run run, BranchIndexingCause cause, EnvVars envVars, TaskListener listener) throws IOException, InterruptedException {
+    public boolean setJenkinsUserBuildVars(Run run, BranchIndexingCause cause, EnvVars envVars) throws IOException, InterruptedException {
 
         if (cause != null) {
             String changeAuthor = envVars.get("CHANGE_AUTHOR");

@@ -53,7 +53,7 @@ public class BuildUser extends EnvironmentContributor {
     public void buildEnvironmentFor(Run r, EnvVars env, TaskListener listener) {
         if (env.get(BUILD_USER_ID) == null) {
             try {
-                makeUserBuildVariables(r, env, listener);
+                makeUserBuildVariables(r, env);
             } catch (Exception e) {
                 String message = String.format("Failed to detect BUILD USER for build %s", r.toString());
                 log.log(Level.SEVERE, message);
@@ -68,18 +68,18 @@ public class BuildUser extends EnvironmentContributor {
      * TODO: The whole hierarchy and way of applying could be refactored.
      */
     @Restricted(NoExternalUse.class)
-    static void makeUserBuildVariables(@Nonnull Run build, @Nonnull EnvVars envVars, TaskListener listener) {
+    static void makeUserBuildVariables(@Nonnull Run build, @Nonnull EnvVars envVars) {
 
         /* Try to use UserIdCause to get & set jenkins user build envVars */
         UserIdCause userIdCause = (UserIdCause) build.getCause(UserIdCause.class);
-        if (new UserIdCauseDeterminant().setJenkinsUserBuildVars(build, userIdCause, envVars, listener)) {
+        if (new UserIdCauseDeterminant().setJenkinsUserBuildVars(build, userIdCause, envVars)) {
             return;
         }
 
         // Try to use deprecated UserCause to get & set jenkins user build envVars
         @SuppressWarnings("deprecation")
         UserCause userCause = (UserCause) build.getCause(UserCause.class);
-        if (new UserCauseDeterminant().setJenkinsUserBuildVars(build, userCause, envVars, listener)) {
+        if (new UserCauseDeterminant().setJenkinsUserBuildVars(build, userCause, envVars)) {
             return;
         }
 
@@ -90,7 +90,7 @@ public class BuildUser extends EnvironmentContributor {
             if (job != null) {
                 Run<?, ?> upstream = job.getBuildByNumber(upstreamCause.getUpstreamBuild());
                 if (upstream != null) {
-                    makeUserBuildVariables(upstream, envVars, listener);
+                    makeUserBuildVariables(upstream, envVars);
                     return;
                 }
             }
@@ -99,40 +99,40 @@ public class BuildUser extends EnvironmentContributor {
         // Other causes should be checked after as build can be triggered automatically and later rerun manually by a human.
         // In that case there will be multiple causes and the direct manually one is preferred to set in a variable.
         try {
-            handleOtherCausesOrLogWarningIfUnhandled(build, envVars, listener);
+            handleOtherCausesOrLogWarningIfUnhandled(build, envVars);
         } catch (Exception e) {
             String message = String.format("Failed to detect BUILD USER for build %s", build);
             log.log(Level.SEVERE, message);        }
     }
 
-    private static void handleOtherCausesOrLogWarningIfUnhandled(@NonNull Run<?, ?> build, @NonNull EnvVars envVars, TaskListener listener) throws Exception {
+    private static void handleOtherCausesOrLogWarningIfUnhandled(@NonNull Run<?, ?> build, @NonNull EnvVars envVars) throws Exception {
         // set BUILD_USER_NAME and ID to fixed value if the build was triggered by a change in the scm, timer or remotely with token
         SCMTriggerCause scmTriggerCause = build.getCause(SCMTriggerCause.class);
-        if (new SCMTriggerCauseDeterminant().setJenkinsUserBuildVars(build, scmTriggerCause, envVars, listener)) {
+        if (new SCMTriggerCauseDeterminant().setJenkinsUserBuildVars(build, scmTriggerCause, envVars)) {
             return;
         }
 
         TimerTriggerCause timerTriggerCause = build.getCause(TimerTriggerCause.class);
-        if (new TimerTriggerCauseDeterminant().setJenkinsUserBuildVars(build, timerTriggerCause, envVars, listener)) {
+        if (new TimerTriggerCauseDeterminant().setJenkinsUserBuildVars(build, timerTriggerCause, envVars)) {
             return;
         }
 
         RemoteCause remoteTriggerCause = build.getCause(RemoteCause.class);
-        if (new RemoteCauseDeterminant().setJenkinsUserBuildVars(build, remoteTriggerCause, envVars, listener)) {
+        if (new RemoteCauseDeterminant().setJenkinsUserBuildVars(build, remoteTriggerCause, envVars)) {
             return;
         }
 
         GitHubPullRequestLabelCause prLabelCause = build.getCause(GitHubPullRequestLabelCause.class);
-        if (new GitHubPullRequestLabelCauseDeterminant().setJenkinsUserBuildVars(build, prLabelCause, envVars, listener)) {
+        if (new GitHubPullRequestLabelCauseDeterminant().setJenkinsUserBuildVars(build, prLabelCause, envVars)) {
             return;
         }
         BranchIndexingCause branchIndexingCause = build.getCause(BranchIndexingCause.class);
-        if (new BranchIndexingTriggerDeterminant().setJenkinsUserBuildVars(build, branchIndexingCause, envVars, listener)) {
+        if (new BranchIndexingTriggerDeterminant().setJenkinsUserBuildVars(build, branchIndexingCause, envVars)) {
             return;
         }
 
         BranchEventCause branchEventCause = build.getCause(BranchEventCause.class);
-        if (new BranchEventCauseDeterminant().setJenkinsUserBuildVars(build, branchEventCause, envVars, listener)) {
+        if (new BranchEventCauseDeterminant().setJenkinsUserBuildVars(build, branchEventCause, envVars)) {
             return;
         }
 

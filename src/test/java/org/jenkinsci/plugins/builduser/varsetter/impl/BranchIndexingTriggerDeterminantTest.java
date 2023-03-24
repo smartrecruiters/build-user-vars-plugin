@@ -30,9 +30,8 @@ public class BranchIndexingTriggerDeterminantTest {
     @Test
     public void setVarsReturnsFalseWithoutBuildUserVarsOnNullCause() throws IOException, InterruptedException {
         EnvVars variables = new EnvVars();
-        TaskListener taskListener = new LogTaskListener(Logger.getLogger("test-logger"), Level.INFO);
         Run run = r.createFreeStyleProject().getBuild("0");
-        assertFalse(new BranchIndexingTriggerDeterminant().setJenkinsUserBuildVars(run, null, variables, taskListener));
+        assertFalse(new BranchIndexingTriggerDeterminant().setJenkinsUserBuildVars(run, null, variables));
         assertThat(variables, equalTo(Collections.emptyMap()));
     }
 }

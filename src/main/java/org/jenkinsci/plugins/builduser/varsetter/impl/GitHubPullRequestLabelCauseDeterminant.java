@@ -12,7 +12,7 @@ public class GitHubPullRequestLabelCauseDeterminant implements IUsernameSettable
     final Class<GitHubPullRequestLabelCause> causeClass = GitHubPullRequestLabelCause.class;
 
     public boolean setJenkinsUserBuildVars(Run run, GitHubPullRequestLabelCause cause,
-                                           EnvVars envVars, TaskListener listener) {
+                                           EnvVars envVars) {
 
         if (cause != null) {
             boolean matched = UserUtils.setVarsForUser(envVars, cause.getSender());

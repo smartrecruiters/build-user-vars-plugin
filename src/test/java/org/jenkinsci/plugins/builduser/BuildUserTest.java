@@ -88,12 +88,12 @@ public class BuildUserTest {
             }
         }
         Assert.assertNotNull("Cannot extract the UpstreamCause", upstreamCause);
-        BuildUser.makeUserBuildVariables(downstreamBuild, outputVars, null); // Just a smoke check
+        BuildUser.makeUserBuildVariables(downstreamBuild, outputVars); // Just a smoke check
 
         // Delete master build and check the correctness
         upstreamBuild.delete();
         try {
-            BuildUser.makeUserBuildVariables(downstreamBuild, outputVars, null);
+            BuildUser.makeUserBuildVariables(downstreamBuild, outputVars);
         } catch (NullPointerException npe) {
             npe.printStackTrace();
             fail("MakeBuildVariables() has failed with NPE on non-existent upstream cause");

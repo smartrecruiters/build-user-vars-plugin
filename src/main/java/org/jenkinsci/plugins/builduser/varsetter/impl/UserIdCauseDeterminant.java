@@ -43,7 +43,7 @@ public class UserIdCauseDeterminant implements IUsernameSettable<UserIdCause> {
      * <p>
      * <b>{@link UserIdCause}</b> based implementation.
      */
-    public boolean setJenkinsUserBuildVars(Run run, UserIdCause cause, EnvVars envVars, TaskListener listener) {
+    public boolean setJenkinsUserBuildVars(Run run, UserIdCause cause, EnvVars envVars) {
         if (null != cause) {
             String username = cause.getUserName();
             UsernameUtils.setUsernameVars(username, envVars);

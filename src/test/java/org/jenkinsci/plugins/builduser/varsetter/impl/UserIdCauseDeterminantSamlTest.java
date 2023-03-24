@@ -60,11 +60,10 @@ public class UserIdCauseDeterminantSamlTest {
         hudson.model.User.getById(userid, true);
         r.jenkins.setSecurityRealm(realm);
         EnvVars outputVars = new EnvVars();
-        TaskListener taskListener = new LogTaskListener(Logger.getLogger("test-logger"), Level.INFO);
         Run run = r.createFreeStyleProject().getBuild("0");
         UserIdCause cause = new UserIdCause(userid);
         UserIdCauseDeterminant determinant = new UserIdCauseDeterminant();
-        determinant.setJenkinsUserBuildVars(run, cause, outputVars, taskListener);
+        determinant.setJenkinsUserBuildVars(run, cause, outputVars);
         return outputVars;
     }
 

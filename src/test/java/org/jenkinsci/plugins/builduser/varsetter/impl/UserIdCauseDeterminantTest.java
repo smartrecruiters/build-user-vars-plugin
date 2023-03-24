@@ -29,12 +29,11 @@ public class UserIdCauseDeterminantTest {
         JenkinsRule.DummySecurityRealm realm = r.createDummySecurityRealm();
         r.jenkins.setSecurityRealm(realm);
         EnvVars outputVars = new EnvVars();
-        TaskListener taskListener = new LogTaskListener(Logger.getLogger("test-logger"), Level.INFO);
         Run run = r.createFreeStyleProject().getBuild("0");
         realm.addGroups("testuser", "group1", "group2");
         UserIdCause cause = new UserIdCause("testuser");
         UserIdCauseDeterminant determinant = new UserIdCauseDeterminant();
-        determinant.setJenkinsUserBuildVars(run, cause, outputVars, taskListener);
+        determinant.setJenkinsUserBuildVars(run, cause, outputVars);
         System.out.println(outputVars);
         assertThat(outputVars.get("BUILD_USER_GROUPS"), is(equalTo("authenticated,group1,group2")));
     }
@@ -45,11 +44,10 @@ public class UserIdCauseDeterminantTest {
         JenkinsRule.DummySecurityRealm realm = r.createDummySecurityRealm();
         r.jenkins.setSecurityRealm(realm);
         EnvVars outputVars = new EnvVars();
-        TaskListener taskListener = new LogTaskListener(Logger.getLogger("test-logger"), Level.INFO);
         Run run = r.createFreeStyleProject().getBuild("0");
         UserIdCause cause = new UserIdCause("testuser");
         UserIdCauseDeterminant determinant = new UserIdCauseDeterminant();
-        determinant.setJenkinsUserBuildVars(run, cause, outputVars, taskListener);
+        determinant.setJenkinsUserBuildVars(run, cause, outputVars);
         System.out.println(outputVars);
         // 'anonymous' user gets authenticated group automatically
         assertThat(outputVars.get("BUILD_USER_GROUPS"), is(equalTo("authenticated")));
@@ -61,11 +59,10 @@ public class UserIdCauseDeterminantTest {
         JenkinsRule.DummySecurityRealm realm = r.createDummySecurityRealm();
         r.jenkins.setSecurityRealm(realm);
         EnvVars outputVars = new EnvVars();
-        TaskListener taskListener = new LogTaskListener(Logger.getLogger("test-logger"), Level.INFO);
         Run run = r.createFreeStyleProject().getBuild("0");
         UserIdCause cause = new UserIdCause("testuser");
         UserIdCauseDeterminant determinant = new UserIdCauseDeterminant();
-        determinant.setJenkinsUserBuildVars(run, cause, outputVars, taskListener);
+        determinant.setJenkinsUserBuildVars(run, cause, outputVars);
         System.out.println(outputVars);
         // User still gets authenticated group automatically
         assertThat(outputVars.get("BUILD_USER_GROUPS"), is(equalTo("authenticated")));
@@ -77,9 +74,8 @@ public class UserIdCauseDeterminantTest {
         UserIdCause cause = new UserIdCause("testuser");
         UserIdCauseDeterminant determinant = new UserIdCauseDeterminant();
         EnvVars outputVars = new EnvVars();
-        TaskListener taskListener = new LogTaskListener(Logger.getLogger("test-logger"), Level.INFO);
         Run run = r.createFreeStyleProject().getBuild("0");
-        determinant.setJenkinsUserBuildVars(run, cause, outputVars, taskListener);
+        determinant.setJenkinsUserBuildVars(run, cause, outputVars);
         System.out.println(outputVars);
         assertThat(outputVars.get("BUILD_USER_GROUPS"), is(equalTo("")));
     }

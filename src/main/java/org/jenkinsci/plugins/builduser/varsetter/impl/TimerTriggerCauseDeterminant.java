@@ -13,7 +13,7 @@ public class TimerTriggerCauseDeterminant implements IUsernameSettable<TimerTrig
     private static final String TIMER_TRIGGER_DUMMY_USER_ID = "timer";
 
     @Override
-    public boolean setJenkinsUserBuildVars(Run run, TimerTrigger.TimerTriggerCause cause, EnvVars envVars, TaskListener listener) {
+    public boolean setJenkinsUserBuildVars(Run run, TimerTrigger.TimerTriggerCause cause, EnvVars envVars) {
         if (cause == null) {
             return false;
         }

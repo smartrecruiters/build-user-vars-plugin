@@ -16,7 +16,7 @@ public class SCMTriggerCauseDeterminant implements IUsernameSettable<SCMTrigger.
 
     final Class<SCMTrigger.SCMTriggerCause> causeClass = SCMTrigger.SCMTriggerCause.class;
 
-    public boolean setJenkinsUserBuildVars(Run run, SCMTriggerCause cause, EnvVars envVars, TaskListener listener) throws Exception {
+    public boolean setJenkinsUserBuildVars(Run run, SCMTriggerCause cause, EnvVars envVars) throws Exception {
 
         if (cause != null) {
             UsernameUtils.setUsernameVars("SCM Change", envVars);

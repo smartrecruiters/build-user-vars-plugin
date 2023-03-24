@@ -53,7 +53,7 @@ public interface IUsernameSettable<T extends Cause> {
      *              <code>true</code> if username was determined and added to the passed map,
      * <code>false</code> otherwise.
      */
-    boolean setJenkinsUserBuildVars(Run run, T cause, EnvVars envVars, TaskListener listener) throws Exception;
+    boolean setJenkinsUserBuildVars(Run run, T cause, EnvVars envVars) throws Exception;
 
     /**
      * Returns {@link Cause} subclass used to determine user name.

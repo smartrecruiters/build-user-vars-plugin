@@ -12,7 +12,7 @@ import static java.lang.String.format;
 public class RemoteCauseDeterminant implements IUsernameSettable<Cause.RemoteCause> {
 
     @Override
-    public boolean setJenkinsUserBuildVars(Run run, Cause.RemoteCause cause, EnvVars envVars, TaskListener listener) {
+    public boolean setJenkinsUserBuildVars(Run run, Cause.RemoteCause cause, EnvVars envVars) {
         if (cause == null) {
             return false;
         }
