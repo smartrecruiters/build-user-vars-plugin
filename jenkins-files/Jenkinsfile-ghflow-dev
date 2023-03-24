@@ -1,0 +1,4 @@
+@Library('global-core-lib') _
+
+mvnReleaser repositoryUrl: 'git@github.com:smartrecruiters/build-user-vars-plugin.git', branch: env.CHANGE_BRANCH, artifactRepository: 'jenkins-plugins-snapshots', packageType: 'hpi'
+
