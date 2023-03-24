@@ -68,7 +68,7 @@ public class BuildUser extends EnvironmentContributor {
      * TODO: The whole hierarchy and way of applying could be refactored.
      */
     @Restricted(NoExternalUse.class)
-    static void makeUserBuildVariables(@Nonnull Run build, @Nonnull EnvVars envVars, TaskListener listener) throws Exception {
+    static void makeUserBuildVariables(@Nonnull Run build, @Nonnull EnvVars envVars, TaskListener listener) {
 
         /* Try to use UserIdCause to get & set jenkins user build envVars */
         UserIdCause userIdCause = (UserIdCause) build.getCause(UserIdCause.class);
