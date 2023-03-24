@@ -30,7 +30,7 @@ public class BranchEventCauseDeterminant implements IUsernameSettable<BranchEven
                 }
             } else {
                 Job job = run.getParent();
-                String branch = run.getEnvironment(listener).get("BRANCH_NAME");
+                String branch = envVars.get("BRANCH_NAME");
                 SCMSource source = SCMSource.SourceByItem.findSource(job);
                 if (source instanceof GitHubSCMSource) {
                     GitHubSCMSource gitHubSCMSource = (GitHubSCMSource) source;
