@@ -24,10 +24,9 @@
 package org.jenkinsci.plugins.builduser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import hudson.EnvVars;
 import hudson.model.AbstractProject;
 import hudson.model.Build;
 import hudson.model.Cause;
@@ -62,7 +61,7 @@ public class BuildUserTest {
         FreeStyleProject childProject = r.createFreeStyleProject();
         List<AbstractProject<?, ?>> childProjects = new ArrayList<>(1);
         childProjects.add(childProject);
-        Map<String, String> outputVars = new HashMap<>();
+        EnvVars outputVars = new EnvVars();
         BuildUser buildUser = new BuildUser();
 
         // Create the parent job
@@ -89,12 +88,12 @@ public class BuildUserTest {
             }
         }
         Assert.assertNotNull("Cannot extract the UpstreamCause", upstreamCause);
-        //        buildUser.makeBuildVariables(downstreamBuild, outputVars); // Just a smoke check
+        BuildUser.makeUserBuildVariables(downstreamBuild, outputVars, null); // Just a smoke check
 
         // Delete master build and check the correctness
         upstreamBuild.delete();
         try {
-            //            buildUser.makeBuildVariables(downstreamBuild, outputVars);
+            BuildUser.makeUserBuildVariables(downstreamBuild, outputVars, null);
         } catch (NullPointerException npe) {
             npe.printStackTrace();
             fail("MakeBuildVariables() has failed with NPE on non-existent upstream cause");
