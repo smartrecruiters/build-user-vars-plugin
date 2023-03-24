@@ -22,7 +22,7 @@ public class BranchEventCauseDeterminant implements IUsernameSettable<BranchEven
     public boolean setJenkinsUserBuildVars(Run run, BranchEventCause cause,
                                            EnvVars envVars, TaskListener listener) throws Exception {
         if (cause != null) {
-            String changeAuthor = run.getEnvironment(listener).get("CHANGE_AUTHOR");
+            String changeAuthor = envVars.get("CHANGE_AUTHOR");
             if (StringUtils.isNotEmpty(changeAuthor)) {
                 boolean matched = UserUtils.setVarsForUser(envVars, changeAuthor);
                 if (!matched) {
