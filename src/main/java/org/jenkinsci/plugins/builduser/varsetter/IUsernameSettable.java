@@ -22,38 +22,22 @@ import hudson.model.TaskListener;
  */
 public interface IUsernameSettable<T extends Cause> {
 
-    /**
-     * Full name of user started build
-     */
-    String BUILD_USER_VAR_NAME = "BUILD_USER";
-    /**
-     * Groups username belongs to
-     **/
-    String BUILD_USER_VAR_GROUPS = "BUILD_USER_GROUPS";
-    /**
-     * First name of user started build
-     */
-    String BUILD_USER_FIRST_NAME_VAR_NAME = "BUILD_USER_FIRST_NAME";
-    /**
-     * Last name of user started build
-     */
-    String BUILD_USER_LAST_NAME_VAR_NAME = "BUILD_USER_LAST_NAME";
-    /**
-     * Email of user started build
-     */
-    String BUILD_USER_EMAIL = "BUILD_USER_EMAIL";
-    /**
-     * Id of user started build
-     */
-    String BUILD_USER_ID = "BUILD_USER_ID";
-    /**
-     * Optional value for variable which value couldn't be defined.
-     */
-    String UNDEFINED = "UNDEFINED";
-    /**
-     * Slack name of the user who started build
-     */
-    String BUILD_USER_SLACK = "BUILD_USER_SLACK";
+    /** Full name of user started build */
+    public static final String BUILD_USER_VAR_NAME = "BUILD_USER";
+    /** Groups username belongs to **/
+    public static final String BUILD_USER_VAR_GROUPS = "BUILD_USER_GROUPS";
+    /** First name of user started build */
+    public static final String BUILD_USER_FIRST_NAME_VAR_NAME = "BUILD_USER_FIRST_NAME";
+    /** Last name of user started build */
+    public static final String BUILD_USER_LAST_NAME_VAR_NAME = "BUILD_USER_LAST_NAME";
+    /** Email of user started build */
+    public static final String BUILD_USER_EMAIL = "BUILD_USER_EMAIL";
+    /** Id of user started build */
+    public static final String BUILD_USER_ID = "BUILD_USER_ID";
+    /** Optional value for variable which value couldn't be defined. */
+    public static final String UNDEFINED = "UNDEFINED";
+    /** Slack name of the user who started build */
+    public static final String BUILD_USER_SLACK = "BUILD_USER_SLACK";
 
 
     /**
