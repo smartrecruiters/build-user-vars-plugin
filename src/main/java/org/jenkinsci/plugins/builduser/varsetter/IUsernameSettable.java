@@ -44,10 +44,13 @@ public interface IUsernameSettable<T extends Cause> {
      * Adds username build variables extracted from build cause to map of build variables.
      *
      * @param run
-     * @param cause    cause where to get username from.
-     * @param envVars  map of build variables, where to add username variables.
+     * @param cause
+     *              cause where to get username from.
+     * @param envVars
+     *              map of build variables, where to add username variables.
      * @param listener
-     * @return <code>true</code> if username was determined and added to the passed map,
+     * @return
+     *              <code>true</code> if username was determined and added to the passed map,
      * <code>false</code> otherwise.
      */
     boolean setJenkinsUserBuildVars(Run run, T cause, EnvVars envVars, TaskListener listener) throws Exception;
