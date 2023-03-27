@@ -1,9 +1,13 @@
 package org.jenkinsci.plugins.builduser.varsetter.impl;
 
+import hudson.EnvVars;
 import hudson.model.Cause.UserIdCause;
 
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.security.ChainedServletFilter;
 import hudson.security.SecurityRealm;
+import hudson.util.LogTaskListener;
 import jenkins.model.IdStrategy;
 import org.easymock.EasyMock;
 import org.jenkinsci.plugins.saml.SamlSecurityRealm;
@@ -14,9 +18,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import javax.servlet.FilterConfig;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -28,7 +35,7 @@ public class UserIdCauseDeterminantSamlTest {
     @Rule
     public JenkinsRule r = new JenkinsRule();
 
-    public Map<String, String> runSamlSecurityRealmTest(JenkinsRule r, String userid, String caseConversion) {
+    public EnvVars runSamlSecurityRealmTest(JenkinsRule r, String userid, String caseConversion) throws IOException {
         ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         User user =
                 new User(
@@ -52,28 +59,30 @@ public class UserIdCauseDeterminantSamlTest {
 
         hudson.model.User.getById(userid, true);
         r.jenkins.setSecurityRealm(realm);
-        Map<String, String> outputVars = new HashMap<>();
+        EnvVars outputVars = new EnvVars();
+        TaskListener taskListener = new LogTaskListener(Logger.getLogger("test-logger"), Level.INFO);
+        Run run = r.createFreeStyleProject().getBuild("0");
         UserIdCause cause = new UserIdCause(userid);
         UserIdCauseDeterminant determinant = new UserIdCauseDeterminant();
-        determinant.setJenkinsUserBuildVars(cause, outputVars);
+        determinant.setJenkinsUserBuildVars(run, cause, outputVars, taskListener);
         return outputVars;
     }
 
     @Test
-    public void testSetJenkinsUserBuildVarsSamlUpperCase() {
-        Map<String, String> outputVars = runSamlSecurityRealmTest(r, "Testuser", "uppercase");
+    public void testSetJenkinsUserBuildVarsSamlUpperCase() throws IOException {
+        EnvVars outputVars = runSamlSecurityRealmTest(r, "Testuser", "uppercase");
         assertThat(outputVars.get("BUILD_USER_ID"), is(equalTo("TESTUSER")));
     }
 
     @Test
-    public void testSetJenkinsUserBuildVarsSamlLowerCase() {
-        Map<String, String> outputVars = runSamlSecurityRealmTest(r, "Testuser", "lowercase");
+    public void testSetJenkinsUserBuildVarsSamlLowerCase() throws IOException {
+        EnvVars outputVars = runSamlSecurityRealmTest(r, "Testuser", "lowercase");
         assertThat(outputVars.get("BUILD_USER_ID"), is(equalTo("testuser")));
     }
 
     @Test
-    public void testSetJenkinsUserBuildVarsSamlNoCase() {
-        Map<String, String> outputVars = runSamlSecurityRealmTest(r, "Testuser", "none");
+    public void testSetJenkinsUserBuildVarsSamlNoCase() throws IOException {
+        EnvVars outputVars = runSamlSecurityRealmTest(r, "Testuser", "none");
         assertThat(outputVars.get("BUILD_USER_ID"), is(equalTo("Testuser")));
     }
 }

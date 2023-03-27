@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>4.54</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <artifactId>build-user-vars-plugin</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>1.9-custom-plugin</version>
     <packaging>hpi</packaging>
     <name>Jenkins build user vars plugin</name>
     <description>Sets username build variables</description>
@@ -65,12 +66,25 @@
             <artifactId>branch-api</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>github-pr-label-build</artifactId>
+            <version>2.0-custom-plugin</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>jackson2-api</artifactId>
+            <version>2.14.1-313.v504cdd45c18b</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>credentials</artifactId>
+            <version>1214.v1de940103927</version>
+        </dependency>
     </dependencies>
 
     <properties>
-        <revision>1.10</revision>
-        <changelist>-SNAPSHOT</changelist>
-        <jenkins.version>2.361.4</jenkins.version>
+        <jenkins.version>2.375</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
     </properties>
 
@@ -85,6 +99,10 @@
         <repository>
             <id>repo.jenkins-ci.org</id>
             <url>https://repo.jenkins-ci.org/public/</url>
+        </repository>
+        <repository>
+            <id>custom-jenkins-plugins</id>
+            <url>https://nexus.srinternal.net/nexus/repository/jenkins-plugins</url>
         </repository>
     </repositories>
 
@@ -101,23 +119,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>without-optional-test</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <classpathDependencyExcludes>
-                                <classpathDependencyExclude>org.jenkins-ci.plugins:saml</classpathDependencyExclude>
-                            </classpathDependencyExcludes>
-                            <excludes>
-                                <exclude>**/*Saml*</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExclude>org.jenkins-ci.plugins:saml</classpathDependencyExclude>
+                    </classpathDependencyExcludes>
+                    <excludes>
+                        <exclude>**/*Saml*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
+        <finalName>${artifactId}-${version}</finalName>
     </build>
 </project>
