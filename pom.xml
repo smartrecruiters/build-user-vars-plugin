@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>build-user-vars-plugin</artifactId>
-    <version>1.9-custom-plugin</version>
+    <version>1.9.1-custom-plugin</version>
     <packaging>hpi</packaging>
     <name>Jenkins build user vars plugin</name>
     <description>Sets username build variables</description>
@@ -98,7 +98,7 @@
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
+            <url>https://nexus.srinternal.net/nexus/repository/public/</url>
         </repository>
         <repository>
             <id>custom-jenkins-plugins</id>
@@ -110,7 +110,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
+            <url>https://nexus.srinternal.net/nexus/repository/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
