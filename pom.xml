@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.54</version>
-        <relativePath/>
+        <version>4.73</version>
+        <relativePath />
     </parent>
 
     <artifactId>build-user-vars-plugin</artifactId>
-    <version>1.9.1-SmartRecruiters</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <name>Jenkins build user vars plugin</name>
     <description>Sets username build variables</description>
@@ -21,8 +20,8 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.361.x</artifactId>
-                <version>1798.vc671fe94856f</version>
+                <artifactId>bom-2.387.x</artifactId>
+                <version>2446.v2e9fd3b_d8c81</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -54,7 +53,7 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <scope>test</scope>
-            <version>5.0.1</version>
+            <version>5.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -84,7 +83,9 @@
     </dependencies>
 
     <properties>
-        <jenkins.version>2.375</jenkins.version>
+        <revision>1.10</revision>
+        <changelist>-SmartRecruiters</changelist>
+        <jenkins.version>2.387.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
     </properties>
 
@@ -119,13 +120,26 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>without-optional-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <classpathDependencyExcludes>
+                                <classpathDependencyExclude>org.jenkins-ci.plugins:saml</classpathDependencyExclude>
+                            </classpathDependencyExcludes>
+                            <excludes>
+                                <exclude>**/*Saml*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
                 <configuration>
-                    <classpathDependencyExcludes>
-                        <classpathDependencyExclude>org.jenkins-ci.plugins:saml</classpathDependencyExclude>
-                    </classpathDependencyExcludes>
-                    <excludes>
-                        <exclude>**/*Saml*</exclude>
-                    </excludes>
+                    <forkCount>1C</forkCount>
+                    <parallel>all</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
                 </configuration>
             </plugin>
         </plugins>
