@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.73</version>
+        <version>4.81</version>
         <relativePath />
     </parent>
 
     <artifactId>build-user-vars-plugin</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>${changelist}</version>
     <packaging>hpi</packaging>
     <name>Jenkins build user vars plugin</name>
     <description>Sets username build variables</description>
@@ -21,7 +21,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-2.387.x</artifactId>
-                <version>2446.v2e9fd3b_d8c81</version>
+                <version>2543.vfb_1a_5fb_9496d</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -83,8 +83,7 @@
     </dependencies>
 
     <properties>
-        <revision>1.10</revision>
-        <changelist>-SmartRecruiters</changelist>
+        <changelist>999999-SmartRecruiters</changelist>
         <jenkins.version>2.387.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
     </properties>
