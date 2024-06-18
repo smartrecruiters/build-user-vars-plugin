@@ -83,7 +83,7 @@
     </dependencies>
 
     <properties>
-        <changelist>999999-SmartRecruiters</changelist>
+        <changelist>166.v52976843b_435-SmartRecruiters</changelist>
         <jenkins.version>2.387.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
     </properties>
