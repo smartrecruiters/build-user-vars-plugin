@@ -53,7 +53,7 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <scope>test</scope>
-            <version>5.2.0</version>
+            <version>5.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -65,10 +65,25 @@
             <artifactId>branch-api</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>github-pr-label-build</artifactId>
+            <version>2.0-custom-plugin</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>jackson2-api</artifactId>
+            <version>2.15.2-350.v0c2f3f8fc595</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>credentials</artifactId>
+            <version>1271.v54b_1c2c6388a_</version>
+        </dependency>
     </dependencies>
 
     <properties>
-        <changelist>999999-SNAPSHOT</changelist>
+        <changelist>166.v52976843b_435-SmartRecruiters</changelist>
         <jenkins.version>2.387.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
     </properties>
@@ -83,7 +98,11 @@
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
+            <url>https://nexus.srinternal.net/nexus/repository/public/</url>
+        </repository>
+        <repository>
+            <id>custom-jenkins-plugins</id>
+            <url>https://nexus.srinternal.net/nexus/repository/jenkins-plugins</url>
         </repository>
     </repositories>
 
@@ -91,7 +110,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
+            <url>https://nexus.srinternal.net/nexus/repository/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -123,5 +142,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>${artifactId}-${version}</finalName>
     </build>
 </project>

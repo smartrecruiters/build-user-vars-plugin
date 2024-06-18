@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import hudson.EnvVars;
 import hudson.model.Cause;
 import hudson.model.CauseAction;
+import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.User;
 import hudson.tasks.Mailer;
@@ -26,13 +27,8 @@ public class BuildUserVarsIntegrationTest {
         r.jenkins.setSecurityRealm(r.createDummySecurityRealm());
 
         FreeStyleProject p = r.createFreeStyleProject();
-        p.getBuildWrappersList().add(new BuildUser());
-        CaptureEnvironmentBuilder captureEnvironment = new CaptureEnvironmentBuilder();
-        p.getBuildersList().add(captureEnvironment);
-        r.assertBuildStatusSuccess(
-                p.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause(user.getId()))));
-
-        EnvVars envVars = captureEnvironment.getEnvVars();
+        FreeStyleBuild build= r.assertBuildStatusSuccess(p.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause(user.getId()))));
+        EnvVars envVars = build.getEnvironment();
         assertEquals("Bob Smith", envVars.get("BUILD_USER"));
         assertEquals("authenticated", envVars.get("BUILD_USER_GROUPS"));
         assertEquals("Bob", envVars.get("BUILD_USER_FIRST_NAME"));
