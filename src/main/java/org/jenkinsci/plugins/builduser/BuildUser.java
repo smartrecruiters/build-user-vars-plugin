@@ -56,7 +56,7 @@ public class BuildUser extends EnvironmentContributor {
                 makeUserBuildVariables(r, env, listener);
             } catch (Exception e) {
                 String message = String.format("Failed to detect BUILD USER for build %s", r.toString());
-                log.log(Level.SEVERE, message);
+                log.log(Level.FINE, message);
             }
         }
     }
@@ -102,7 +102,7 @@ public class BuildUser extends EnvironmentContributor {
             handleOtherCausesOrLogWarningIfUnhandled(build, envVars, listener);
         } catch (Exception e) {
             String message = String.format("Failed to detect BUILD USER for build %s", build);
-            log.log(Level.SEVERE, message);        }
+            log.log(Level.FINE, message);        }
     }
 
     private static void handleOtherCausesOrLogWarningIfUnhandled(@NonNull Run<?, ?> build, @NonNull EnvVars envVars, TaskListener listener) throws Exception {
